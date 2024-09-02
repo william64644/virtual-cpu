@@ -59,14 +59,18 @@ class CPU:
     
     def MOVIR(self):
         pass
+
+    def NOOP(self):
+        pass
         
     def fetch(self):
         pcInt = int(''.join(self.pc),2)
         self.instructionBrute = ROM.data[pcInt*64:pcInt*64+63]
     
     decodeMap = {
-        "00000001": MOVRR,
-        "00000010": MOVIR
+        "00000001": NOOP,
+        "00000010": MOVRR,
+        "00000011": MOVIR
     }
     
     def decode(self):
