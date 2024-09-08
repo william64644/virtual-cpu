@@ -1,0 +1,5 @@
+v0.0.3:
+    Actually use bit manipulation to do math instead of python expressions
+
+v0.0.4:
+    Use simulated logic gates to do bit manipulation
