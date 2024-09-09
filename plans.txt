@@ -1,3 +1,11 @@
+v0.0.2:
+    Create CMP (Compare)
+    Create JMP (Jump)
+    Create JEQ/JNE (Jump if Equal/Not Equal)
+    Create AND/OR/NOT/XOR (Bitwise Operations)
+    Create INC/DEC (Increment/Decrement)
+    Load programs from a ROM into the RAM
+
 v0.0.3:
     Actually use bit manipulation to do math instead of python expressions
 

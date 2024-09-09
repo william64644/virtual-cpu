@@ -1,8 +1,10 @@
 import time
-
+import assemblerV0_0_2
 
 class RAM: 
-    def __init__(self):
+    def __init__(self, data):
+        self.data = data
+        self.data += ["00000000"] * 40 # empty space for program variables
         """
         self.data = ["00000101"] # NOOP
         self.data += ["00001111","00000000","00000000","00000000","00000000","00000000","01010101","10101010"] # MOVIR r0f 0x55AA
@@ -20,15 +22,15 @@ class RAM:
         store r1f at 0x14(20)
         load r3f from address 0x14(20)
         """
-
+        """
         self.data = ["00000101"] # NOOP
         self.data += ["00001111", "00000100", "00000000","00000000","00000000","00000000","00001000","10101110"] #MOVIR r1f 0x8AE
         self.data += ["00001111", "00001000", "00000000","00000000","00000000","00000000","00000000","00110010"] #MOVIR r2f 0x32
         self.data += ["00011001", "00000100", "00001000"] # STR r1f r2f
         self.data += ["00010100", "00001100", "00001000"] # LDR r3f r2f
+        self.data += ["00011110", "00010000", "00000100", "00001100"] # SUM r4f r1f r3f
         self.data += ["00000100"] # HLT
-        self.data += ["00000000"] * 50
-
+        """
 
         """
         # Program to text the MOVIR instruction:
@@ -55,10 +57,10 @@ class RAM:
 
 
 class CPU:
-    def __init__(self, ram: RAM, heartz=1, debugMode=False):
+    def __init__(self, ram: RAM, hertz=1, debugMode=False):
 ########### Registers / RAM ###########
         self.RAM = ram
-        self.heatz:float = 1 / heartz
+        self.hertz:float = 1 / hertz
         self.registers:dict = {
             "00000000": ["00000000"] * 8, #r0f
             "00000100": ["00000000"] * 8, #r1f
@@ -164,7 +166,7 @@ class CPU:
 
     def HLT(self):
         if self.debugMode:
-            print("HLT - Haulting the CPU")
+            print("HLT - Halting the CPU")
 
         self.increasePc()
         exit()
@@ -186,12 +188,12 @@ class CPU:
         self.increasePc(4)
 
     def MOVIR(self):
-        # move an imediate value into a register
+        # move an immediate value into a register
         destinationRegisterId = self.registers["01000011"][1]
         registerData = self.registers["01000011"][2:8]
         if self.debugMode:
             
-            print(f"MOVIR - Moving the imediate value {hex(self.registerDataToInt(registerData))} into {self.registerIdNameMap[destinationRegisterId]}")
+            print(f"MOVIR - Moving the immediate value {hex(self.registerDataToInt(registerData))} into {self.registerIdNameMap[destinationRegisterId]}")
             pass
                                                 # Cant fill first 2 bytes since only 6 fit in the instruction
         self.registers[destinationRegisterId] = ["00000000","00000000"] + registerData
@@ -279,11 +281,21 @@ class CPU:
         self.decode()
         self.execute()
         self.logStatus() if self.debugMode else None
-        time.sleep(self.heatz)
+        time.sleep(self.hertz)
 
 
-ram = RAM()
+assembly = """
+NOOP
+MOVIR r1f 0x8AE
+MOVIR r2f 0x32
+STR r1f r2f
+LDR r3f r2f
+SUM r4f r1f r3f
+HLT
+"""
 
+ram = RAM(assemblerV0_0_2.assemble(assembly))
+print(ram.data)
 cpu = CPU(ram, debugMode=True)
 
 
